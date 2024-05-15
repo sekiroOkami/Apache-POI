@@ -9,6 +9,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class AddImageToExcel {
     public static void main(String[] args) throws Exception {
@@ -24,12 +27,22 @@ public class AddImageToExcel {
             // resize the image
             BufferedImage resizedImage = resizeImage(originalImage, width, height);
 
-            // Save the resized img
-            File tempFile = File.createTempFile("resizedImg",".png");
-            ImageIO.write(resizedImage, "png", tempFile);
+            Path outputDirectory = Paths.get(".\\src\\main\\resources\\images\\modified");
+
+            // create the directory if it doesn't exist
+            try {
+                Files.createDirectories(outputDirectory);
+                System.out.println("Output directory created successfully.");
+            } catch (IOException e) {
+                System.err.println("Failed to create output directory: " + e.getMessage());
+            }
+
+            // create a Path obj for the resized image with the specified direcctory and file name
+            Path tempFile = outputDirectory.resolve("resizedImage.png");
+            ImageIO.write(resizedImage, "png", tempFile.toFile());
 
             // load an image file
-            try (InputStream inputStream = new FileInputStream(tempFile)) {
+            try (InputStream inputStream = new FileInputStream(tempFile.toFile())) {
                 // convert the image to a byte array
                 byte[] bytes = IOUtils.toByteArray(inputStream);
 
@@ -54,7 +67,7 @@ public class AddImageToExcel {
                 Picture picture = drawing.createPicture(anchor, pictureIndex);
 
                 // Resize the picture to fit the anchor
-                picture.resize();
+                picture.resize(2);
                 try (FileOutputStream fileOut = new FileOutputStream("workbook_with_picture.xlsx")) {
                     wb.write(fileOut);
                     System.out.println("Image added to the excel file successfully!");
