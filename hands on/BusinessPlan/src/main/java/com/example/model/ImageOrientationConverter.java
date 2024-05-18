@@ -23,8 +23,8 @@ public class ImageOrientationConverter {
             BufferedImage landscapeImage = rotateImage(originalImage);
 
             // save the landsccape image to the new directory
-            Path outputFilePath = outputDirectory.resolve(imagePath.getFileName());
-            ImageIO.write(landscapeImage, "png", outputFilePath.toFile());
+//            Path outputFilePath = outputDirectory.resolve(imagePath.getFileName());
+            ImageIO.write(landscapeImage, "png", imagePath.toFile());
         } catch (IOException e) {
             e.printStackTrace();
         }
