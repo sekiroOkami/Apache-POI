@@ -25,7 +25,14 @@ public class AddImageToExcel {
             BufferedImage resizedImage = resizeImage(originalImage, width, height);
 
             // Save the resized img
-            File tempFile = File.createTempFile("resizedImg",".png");
+            String outputDirectory = ".\\src\\main\\resources\\images\\modified\\";
+            File outputDirFile = new File(outputDirectory);
+//            if (!outputDirFile.exists()) {
+//                if (outputDirectory.mkdirs()) {
+//
+//                }
+//            }
+            File tempFile = new File(outputDirectory, "modifies_TacoCloud.png");
             ImageIO.write(resizedImage, "png", tempFile);
 
             // load an image file
