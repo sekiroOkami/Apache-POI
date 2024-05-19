@@ -3,6 +3,7 @@ package com.example.model;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.stream.Stream;
 public class ImageProcessor {
 
     public static List<Path> loadImages(Path directoryPath) throws IOException {
-        try (Stream<Path> paths = Files.walk(directoryPath)){
+        try (Stream<Path> paths = Files.walk(directoryPath, FileVisitOption.FOLLOW_LINKS).parallel()) {
             return paths.filter(Files::isRegularFile)
                     .filter(path -> {
                         String fileName = path.getFileName().toString().toLowerCase();
@@ -23,7 +24,7 @@ public class ImageProcessor {
     }
     public static List<Path> filterPortraitImage(List<Path> imagePaths) throws IOException {
         return
-        imagePaths.stream()
+        imagePaths.parallelStream()
                 .filter(ImageProcessor::isPortrait)
                 .collect(Collectors.toList());
     }
@@ -39,7 +40,7 @@ public class ImageProcessor {
     }
 
     public static void writeLandscapeImageToModifiedDirectory(List<Path> portraitList, Path modifiedDirectory) {
-        portraitList.stream()
+        portraitList.parallelStream()
                 .forEach(portraitPath -> {
                     try {
                         BufferedImage originalImage = ImageIO.read(portraitPath.toFile());

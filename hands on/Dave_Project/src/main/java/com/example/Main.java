@@ -23,11 +23,11 @@ import static com.example.model.ImageProcessor.*;
 public class Main {
     public static final int EMU_PER_INCH = 914400;
     public static void main(String[] args) throws Exception {
-        Path imagesDirectory = Paths.get(".\\src\\main\\resources\\portraitPic");
-        Path outputDirectory = Paths.get(".\\src\\main\\resources\\portraitPic\\modifiedImage");
+        Path imagesDirectory = Paths.get(".\\src\\main\\resources\\images");
+//        Path outputDirectory = Paths.get(".\\src\\main\\resources\\portraitPic\\modifiedImage");
         List<Path> pathList = loadImages(imagesDirectory);
-//        System.out.println(pathList.toString());
-        writeLandscapeImageToModifiedDirectory(pathList, outputDirectory);
+        List<Path> portraitImage = filterPortraitImage(pathList);
+        System.out.println(portraitImage);
     }
 
     private static void demo1() throws IOException {
