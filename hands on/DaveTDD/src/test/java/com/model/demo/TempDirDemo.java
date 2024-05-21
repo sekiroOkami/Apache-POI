@@ -49,7 +49,7 @@ public class TempDirDemo {
     }
 
     public static void main(String[] args) {
-        List<Path> paths = new ImageProcessor().loadImages(Paths.get(".\\src\\test\\resources\\images"));
+        var paths = new ImageProcessor().loadImages(Paths.get(".\\src\\test\\resources\\images"));
         System.out.println(paths.size());
     }
 }

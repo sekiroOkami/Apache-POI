@@ -1,6 +1,6 @@
 package com.example;
 
-import com.example.model.ImageProcessor;
+import com.example.model.LoaderImage;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Drawing;
@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static com.example.model.ImageInserter.addImagesToExcel;
 import static com.example.model.ImageProcessor.*;
 
 public class Main {
@@ -25,7 +24,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Path imagesDirectory = Paths.get(".\\src\\main\\resources\\images");
 //        Path outputDirectory = Paths.get(".\\src\\main\\resources\\portraitPic\\modifiedImage");
-        List<Path> pathList = loadImages(imagesDirectory);
+        List<Path> pathList = LoaderImage.loadImages(imagesDirectory);
         List<Path> portraitImage = filterPortraitImage(pathList);
         System.out.println(portraitImage);
     }
