@@ -69,19 +69,23 @@ public class ImageProcessor implements ImageService {
                 try {
                     BufferedImage portraitImage = ImageIO.read(path.toFile());
                     BufferedImage landscapeImage = rotateImage(portraitImage);
-                    // extract the filename
-                    String fileName = path.getFileName().toString();
-                    // construct the output path
-                    Path destinationPath = modifiedDirectoryLocation.resolve(fileName);
-                    // Ensure the modified directory exits
-                    if (!Files.exists(destinationPath)) {
-                        Files.createDirectories(destinationPath);
-                    }
-                    ImageIO.write(landscapeImage, ".jpeg", destinationPath.toFile());
+                    writeImagePathToDirectoryLocation(modifiedDirectoryLocation, path, landscapeImage);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             });
+    }
+
+    private static void writeImagePathToDirectoryLocation(Path modifiedDirectoryLocation, Path path, BufferedImage landscapeImage) throws IOException {
+        // extract the filename
+        String fileName = path.getFileName().toString();
+        // construct the output path
+        Path destinationPath = modifiedDirectoryLocation.resolve(fileName);
+        // Ensure the modified directory exits
+        if (!Files.exists(modifiedDirectoryLocation)) {
+            Files.createDirectories(modifiedDirectoryLocation);
+        }
+        ImageIO.write(landscapeImage, String.valueOf(ImageFileType.JPEG), destinationPath.toFile());
     }
 
     @Override
@@ -100,4 +104,26 @@ public class ImageProcessor implements ImageService {
         return rotatedImage;
     }
 
+
+    public void writeLandscapeImageToModifiedDirectoryIfImageIsPortraitRotateBeforeWrite(Path imagesDirectory,
+                                                                                           Path modifiedDirectoryLocation) throws IOException {
+        Objects.requireNonNull(imagesDirectory);
+        // load all of images
+        Set<Path> pathSetOfImage = loadImages(imagesDirectory);
+        // Process each image in parallel
+        pathSetOfImage.parallelStream()
+                .forEach(path -> {
+                    try {
+                        BufferedImage target;
+                        if (isPortrait(path)) {
+                            target = rotateImage(ImageIO.read(path.toFile()));
+                        } else {
+                            target = ImageIO.read(path.toFile());
+                        }
+                        writeImagePathToDirectoryLocation(modifiedDirectoryLocation, path, target);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Error processing image: " + path, e);
+                    }
+                });
+    }
 }

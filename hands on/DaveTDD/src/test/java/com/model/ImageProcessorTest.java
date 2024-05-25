@@ -239,4 +239,27 @@ public class ImageProcessorTest {
         }
     }
 
+    @Test
+    @DisplayName("Test writeLandscapeImageToModifiedDirectoryIfImageIsPortraitAdjustItBeforeWrite")
+    void test(@TempDir Path tempDir) throws IOException {
+
+        Path modifiedDirectory = tempDir.resolve("modifiedDirectory");
+        Path pathToLandScape1 = createTestImage(modifiedDirectory, "landscape1.png", 1000, 500 );
+        Path pathToLandScape2 = createTestImage(modifiedDirectory, "landscape2.png", 1000, 500 );
+        Path pathToPortrait1 = createTestImage(modifiedDirectory, "portrait1.png", 1000, 2000 );
+        modifiedDirectory.resolve(pathToLandScape1);
+        modifiedDirectory.resolve(pathToLandScape2);
+        modifiedDirectory.resolve(pathToPortrait1);
+
+        Files.createDirectories(tempDir);
+        Files.createDirectories(pathToLandScape1);
+        Files.createDirectories(pathToLandScape2);
+        Files.createDirectories(pathToPortrait1);
+
+        Set<Path> setOfImage = new HashSet<>();
+        setOfImage.add(pathToLandScape1);
+        imageProcessor.writeLandscapeImageToModifiedDirectoryIfImageIsPortraitAdjustItBeforeWrite(tempDir);
+
+    }
+
 }

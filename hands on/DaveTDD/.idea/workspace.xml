@@ -5,19 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab26da05-aaf5-48db-a13e-c1e26d4faf59" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/model/exception/ImageProcessingException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/model/ImageFileTypeTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/model/ImageProcessorReflectionTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Dave_Project/src/main/java/com/example/model/LoaderImage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/model/ImageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/model/ImageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/model/ImageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/model/ImageService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/model/ImageProcessorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/model/ImageProcessorTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/model/demo/TempDirDemo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/model/demo/TempDirDemo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Dave_Project/src/main/java/com/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Dave_Project/src/main/java/com/example/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Dave_Project/src/main/java/com/example/model/ImageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Dave_Project/src/main/java/com/example/model/ImageProcessor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,7 +221,22 @@
     </task>
     <servers />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/test/java/com/model/ImageProcessorTest.java</url>
+          <line>219</line>
+          <properties class="com.model.ImageProcessorTest" method="shouldThrowExceptionWhenWrite">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/DaveTDD$ImageProcessorTest.ic" NAME="ImageProcessorTest Coverage Results" MODIFIED="1716301973509" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/DaveTDD$ImageProcessorTest.ic" NAME="ImageProcessorTest Coverage Results" MODIFIED="1716302276291" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
