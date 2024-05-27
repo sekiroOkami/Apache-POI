@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -25,6 +26,26 @@ public class ImageProcessor implements ImageService {
                 .collect(Collectors.toSet());
         } catch (IOException e) {
             throw new ImageProcessingException("Failed to read image file: " + imagesDirectory, e);
+        }
+    }
+
+    public Set<Path> loadImages(Path... imagesDirectories) {
+        Objects.requireNonNull(imagesDirectories, "Image directories must not be null");
+
+        try {
+            return Arrays.stream(imagesDirectories)
+                    .parallel() // Process directories in parallel
+                    .flatMap(imagesDirectory -> {
+                        try (Stream<Path> pathStream = Files.list(imagesDirectory).parallel()) {
+                            return pathStream.filter(Files::isRegularFile)
+                                    .filter(ImageProcessor::isImageFile);
+                        } catch (IOException e) {
+                            throw new ImageProcessingException("Failed to read image file: " + imagesDirectory, e);
+                        }
+                    })
+                    .collect(Collectors.toSet());
+        } catch (ImageProcessingException e) {
+            throw new RuntimeException("Failed to load images from provided directories", e);
         }
     }
 
@@ -77,14 +98,15 @@ public class ImageProcessor implements ImageService {
     }
 
     private static void writeImagePathToDirectoryLocation(Path modifiedDirectoryLocation, Path path, BufferedImage landscapeImage) throws IOException {
-        // extract the filename
-        String fileName = path.getFileName().toString();
-        // construct the output path
-        Path destinationPath = modifiedDirectoryLocation.resolve(fileName);
         // Ensure the modified directory exits
         if (!Files.exists(modifiedDirectoryLocation)) {
             Files.createDirectories(modifiedDirectoryLocation);
         }
+
+        // extract the filename
+        String fileName = path.getFileName().toString();
+        // construct the output path
+        Path destinationPath = modifiedDirectoryLocation.resolve(fileName);
         ImageIO.write(landscapeImage, String.valueOf(ImageFileType.JPEG), destinationPath.toFile());
     }
 
@@ -104,7 +126,6 @@ public class ImageProcessor implements ImageService {
         return rotatedImage;
     }
 
-
     public void writeLandscapeImageToModifiedDirectoryIfImageIsPortraitRotateBeforeWrite(Path imagesDirectory,
                                                                                            Path modifiedDirectoryLocation) throws IOException {
         Objects.requireNonNull(imagesDirectory);
@@ -117,13 +138,13 @@ public class ImageProcessor implements ImageService {
                         BufferedImage target;
                         if (isPortrait(path)) {
                             target = rotateImage(ImageIO.read(path.toFile()));
-                        } else {
-                            target = ImageIO.read(path.toFile());
+                            writeImagePathToDirectoryLocation(imagesDirectory.resolve(modifiedDirectoryLocation), path, target);
                         }
-                        writeImagePathToDirectoryLocation(modifiedDirectoryLocation, path, target);
                     } catch (IOException e) {
                         throw new RuntimeException("Error processing image: " + path, e);
                     }
                 });
     }
+
+
 }

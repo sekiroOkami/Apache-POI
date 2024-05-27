@@ -4,9 +4,10 @@ import com.model.exception.ImageProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,16 +15,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class ImageProcessorTest {
+    @Mock
     public ImageProcessor imageProcessor;
 
     @BeforeEach
@@ -243,22 +244,32 @@ public class ImageProcessorTest {
     @DisplayName("Test writeLandscapeImageToModifiedDirectoryIfImageIsPortraitAdjustItBeforeWrite")
     void test(@TempDir Path tempDir) throws IOException {
 
-        Path modifiedDirectory = tempDir.resolve("modifiedDirectory");
-        Path pathToLandScape1 = createTestImage(modifiedDirectory, "landscape1.png", 1000, 500 );
-        Path pathToLandScape2 = createTestImage(modifiedDirectory, "landscape2.png", 1000, 500 );
-        Path pathToPortrait1 = createTestImage(modifiedDirectory, "portrait1.png", 1000, 2000 );
-        modifiedDirectory.resolve(pathToLandScape1);
-        modifiedDirectory.resolve(pathToLandScape2);
-        modifiedDirectory.resolve(pathToPortrait1);
+        Path imagePathFolder = tempDir.resolve("imagePathFolder");
+        Files.createDirectories(imagePathFolder);
+        Path pathToLandScape1 = createTestImage(imagePathFolder, "landscape1.png", 1000, 500 );
+        Path pathToLandScape2 = createTestImage(imagePathFolder, "landscape2.png", 1000, 500 );
+        Path pathToPortrait1 = createTestImage(imagePathFolder, "portrait1.png", 1000, 2000 );
 
-        Files.createDirectories(tempDir);
-        Files.createDirectories(pathToLandScape1);
-        Files.createDirectories(pathToLandScape2);
-        Files.createDirectories(pathToPortrait1);
+
+
+        // Act
+        imageProcessor.writeLandscapeImageToModifiedDirectoryIfImageIsPortraitRotateBeforeWrite(imagePathFolder,
+                Path.of("modifiedDirectory"));
 
         Set<Path> setOfImage = new HashSet<>();
         setOfImage.add(pathToLandScape1);
-        imageProcessor.writeLandscapeImageToModifiedDirectoryIfImageIsPortraitAdjustItBeforeWrite(tempDir);
+        setOfImage.add(pathToLandScape2);
+        setOfImage.add(pathToPortrait1);
+
+
+        assertAll(
+                ()-> assertTrue(Files.exists(imagePathFolder)),
+                ()-> assertTrue(Files.exists(pathToLandScape1)),
+                ()-> assertTrue(Files.exists(pathToLandScape2)),
+                ()-> assertTrue(Files.exists(pathToPortrait1)),
+                ()-> assertTrue(Files.exists(imagePathFolder.resolve("modifiedDirectory"))),
+                ()-> assertTrue(Files.exists(imagePathFolder.resolve("modifiedDirectory").resolve("portrait1.png")))
+        );
 
     }
 
