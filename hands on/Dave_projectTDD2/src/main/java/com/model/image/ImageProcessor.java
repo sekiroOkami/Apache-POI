@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,26 +15,14 @@ import java.util.stream.Stream;
 
 public final class ImageProcessor implements ImageService {
     @Override
-    public Set<Path> loadImages(Path... imagesDirectories) {
-        Objects.requireNonNull(imagesDirectories, "Image directories must not be null");
-        try {
-            return Arrays.stream(imagesDirectories)
-                    .parallel() // Process directories in parallel
-                    .flatMap(imagesDirectory -> {
-                        try (Stream<Path> pathStream = Files.list(imagesDirectory).parallel()) {
-                            return pathStream.filter(Files::isRegularFile)
-                                    .filter(ImageProcessor::isImageFile);
-                        } catch (IOException e) {
-                            throw new ImageProcessingException("Failed to read image file: " + imagesDirectory, e);
-                        }
-                    })
-                    .collect(Collectors.toSet());
-        } catch (ImageProcessingException e) {
-            throw new RuntimeException("Failed to load images from provided directories", e);
-        }
+    public Set<Path> loadImages(Path imagesDirectories) throws IOException {
+        Objects.requireNonNull(imagesDirectories, "Directory paths must not be null");
+        Stream<Path> pathStream = Files.list(imagesDirectories);
+            return new HashSet<>(pathStream.filter(path ->
+                    Files.isRegularFile(path) && this.isImageFile(path)).collect(Collectors.toSet()));
     }
 
-    private static boolean isImageFile(Path path) {
+    public boolean isImageFile(Path path) {
         Objects.requireNonNull(path);
         String fileName = path.getFileName().toString().toLowerCase();
         for (ImageFileType type : ImageFileType.values()) {
@@ -88,7 +77,7 @@ public final class ImageProcessor implements ImageService {
     }
 
 
-    public Set<Path> collectLandscapeImages(Path... directories) throws IOException {
+    public Set<Path> collectLandscapeImages(Path directories) throws IOException {
         Set<Path> allImages  = loadImages(directories);
 
         // Filter out only landscape images

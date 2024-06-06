@@ -6,8 +6,8 @@ import java.nio.file.Path;
 import java.util.Set;
 
 public sealed interface ImageService permits ImageProcessor {
-    public Set<Path> loadImages(Path... imageDirectory);
-
+    public Set<Path> loadImages(Path imageDirectory) throws IOException;
+    public boolean isImageFile(Path path);
     public Path writeImageToModifiedDirectory(Path imagesDirectory, Path modifiedDirectory);
     public boolean isPortrait(Path pathOfImage) throws IOException;
     public BufferedImage rotateImage(BufferedImage image);

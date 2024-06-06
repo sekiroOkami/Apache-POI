@@ -1,6 +1,14 @@
 package com.model.GUI;
 
+import com.model.image.ImageProcessingException;
+import com.model.image.ImageProcessor;
+import com.model.image.ImageService;
+
 import javax.swing.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Set;
 
 public class Frame extends JFrame {
     // Variables declaration - do not modify
@@ -10,6 +18,7 @@ public class Frame extends JFrame {
     public Frame() {
         init();
     }
+    public final ImageProcessor imageProcessor = new ImageProcessor();
     private void init() {
         jPanel1 = new JPanel();
         loadButton = new JButton();
@@ -18,7 +27,34 @@ public class Frame extends JFrame {
 
         loadButton.setText("LoadImages");
         startButton.setText("Start");
-//        loadButton.addActionListener();
+
+        loadButton.addActionListener(e-> {
+            // Create a file chooser
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.setMultiSelectionEnabled(true);
+
+            // show the file chooser dialog
+            int result = fileChooser.showOpenDialog(this);
+
+            // Process the result
+            if (result == JFileChooser.APPROVE_OPTION) {
+                // Get the selected file
+                Path imagePath = fileChooser.getSelectedFile().toPath();
+
+                // ImageProcessor is DOC
+                Set<Path> pathSet = null;
+                try {
+                    pathSet = imageProcessor.loadImages(imagePath);
+                } catch (IOException ex) {
+                    throw new ImageProcessingException("error loadImages");
+                }
+                // Inform the user that the loading process was successful
+                JOptionPane.showMessageDialog(this, "File loaded successfully: " + imagePath, "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            }
+        });
         setLayout();
 
         pack();
@@ -68,6 +104,7 @@ public class Frame extends JFrame {
                                 .addContainerGap())
         );
     }
+
 
 
 }
